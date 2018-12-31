@@ -19,5 +19,10 @@ module.exports = {
 		'clientID': '87EgQuA1Sgax4w4YQpH8Vya6I',
 		'clientSecret': '7SBQ5YANWctUzd6oyuFfzB2kVGBJEHAVdB460wYZcuFJLxxS7G',
 		'callbackURL': 'http://172.16.12.42:8080/auth/twitter/callback'
+	},
+	'stocktwits' : {
+		'clientID': '099553b84befb363',
+		'clientSecret': '35a9b072e43b93bf1858ff65dd0dbbe9546043d8',
+		'callbackURL': 'http://172.16.12.42:8080/connect/stocktwits/callback'
 	}
 }

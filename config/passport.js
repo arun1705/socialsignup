@@ -119,30 +119,30 @@ module.exports = function (passport) {
 			callbackURL: configAuth.linkedinAuth.callbackURL
 		},
 		function (token, tokenSecret, profile, done) {
-			// process.nextTick(function () {
-			// 	User.findOne({
-			// 		'linkedinAuth.id': profile.id
-			// 	}, function (err, user) {
-			// 		if (err)
-			// 			return done(err);
-			// 		if (user)
-			// 			return done(null, user);
-			// 		else {
-			// 			var newUser = new User();
-			// 			newUser.linkedinAuth.id = profile.id;
-			// 			newUser.linkedinAuth.token = token;
-			// 			newUser.linkedinAuth.name = profile.name.givenName + ' ' + profile.name.familyName;
-			// 			newUser.linkedinAuth.email = profile.emails[0].value;
+			process.nextTick(function () {
+				User.findOne({
+					'linkedinAuth.id': profile.id
+				}, function (err, user) {
+					if (err)
+						return done(err);
+					if (user)
+						return done(null, user);
+					else {
+						var newUser = new User();
+						newUser.linkedinAuth.id = profile.id;
+						newUser.linkedinAuth.token = token;
+						newUser.linkedinAuth.name = profile.name.givenName + ' ' + profile.name.familyName;
+						newUser.linkedinAuth.email = profile.emails[0].value;
 
-			// 			newUser.save(function (err) {
-			// 				if (err)
-			// 					throw err;
-			// 				return done(null, newUser);
-			// 			})
-			// 			console.log(profile);
-			// 		}
-			// 	});
-			// });
+						newUser.save(function (err) {
+							if (err)
+								throw err;
+							return done(null, newUser);
+						})
+						console.log(profile);
+					}
+				});
+			});
 			
 				console.log(token);
 				console.log(profile);
@@ -158,30 +158,30 @@ module.exports = function (passport) {
 			callbackURL: configAuth.twitterAuth.callbackURL
 		},
 		function (token, tokenSecret, profile, done) {
-			// process.nextTick(function () {
-			// 	User.findOne({
-			// 		'twitterAuth.id': profile.id
-			// 	}, function (err, user) {
-			// 		if (err)
-			// 			return done(err);
-			// 		if (user)
-			// 			return done(null, user);
-			// 		else {
-			// 			var newUser = new User();
-			// 			newUser.twitterAuth.id = profile.id;
-			// 			newUser.twitterAuth.token = token;
-			// 			newUser.twitterAuth.name = profile.name.givenName + ' ' + profile.name.familyName;
-			// 			newUser.twitterAuth.email = profile.emails[0].value;
+			process.nextTick(function () {
+				User.findOne({
+					'twitterAuth.id': profile.id
+				}, function (err, user) {
+					if (err)
+						return done(err);
+					if (user)
+						return done(null, user);
+					else {
+						var newUser = new User();
+						newUser.twitterAuth.id = profile.id;
+						newUser.twitterAuth.token = token;
+						newUser.twitterAuth.name = profile.name.givenName + ' ' + profile.name.familyName;
+						newUser.twitterAuth.email = profile.emails[0].value;
 
-			// 			newUser.save(function (err) {
-			// 				if (err)
-			// 					throw err;
-			// 				return done(null, newUser);
-			// 			})
-			// 			console.log(profile);
-			// 		}
-			// 	});
-			// });
+						newUser.save(function (err) {
+							if (err)
+								throw err;
+							return done(null, newUser);
+						})
+						console.log(profile);
+					}
+				});
+			});
 			console.log(token);
 			console.log(profile);
 			done();
@@ -190,9 +190,9 @@ module.exports = function (passport) {
 	));
 
 	passport.use(new StockTwitsStrategy({
-        clientID: '099553b84befb363',
-        clientSecret: '35a9b072e43b93bf1858ff65dd0dbbe9546043d8',
-        callbackURL: 'http://localhost:8080/connect/stocktwits/callback',
+        clientID: configAuth.stocktwits.clientID,
+        clientSecret: configAuth.stocktwits.clientSecret,
+        callbackURL: configAuth.stocktwits.callbackURL,
         passReqToCallback: true
     }, function (req, token, secret, profile, done) {
         console.log(token);
