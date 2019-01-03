@@ -35,7 +35,7 @@ module.exports = function (app, passport) {
 	});
 
 	app.get('/auth/facebook', passport.authenticate('facebook', {
-		scope: ['email']
+
 	}));
 
 	app.get('/auth/facebook/callback',
@@ -72,9 +72,21 @@ module.exports = function (app, passport) {
 	}));
 
 	app.get('/connect/stocktwits/callback', passport.authorize('stocktwits', {
+		scope: ['read', 'watch_lists', 'publish_messages', 'publish_watch_lists',
+			'follow_users', 'follow_stocks'
+		],
 		failureRedirect: '/',
 		successRedirect: '/profile'
 	}));
+
+	app.get('/auth/google',
+		passport.authenticate('google'));
+
+	app.get('/auth/google/callback',
+		passport.authenticate('google', {
+			successRedirect: '/profile',
+			failureRedirect: '/'
+		}));
 
 	app.get('/logout', function (req, res) {
 		req.logout();

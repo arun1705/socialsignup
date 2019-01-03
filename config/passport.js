@@ -3,9 +3,11 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var LinkedInStrategy = require('passport-linkedin').Strategy;
 var TwitterStrategy = require('passport-twitter').Strategy;
 var StockTwitsStrategy = require('passport-stocktwits').Strategy;
-
+var GoogleStrategy = require('passport-google-oauth2').Strategy;
+var request1 = require("request");
 var User = require('../app/models/user');
 var configAuth = require('./auth');
+var contactlist = [];
 
 module.exports = function (passport) {
 
@@ -79,7 +81,9 @@ module.exports = function (passport) {
 	passport.use(new FacebookStrategy({
 			clientID: configAuth.facebookAuth.clientID,
 			clientSecret: configAuth.facebookAuth.clientSecret,
-			callbackURL: configAuth.facebookAuth.callbackURL
+			callbackURL: configAuth.facebookAuth.callbackURL,
+			profileFields: ['id', 'first_name', 'last_name', 'middle_name', 'displayName', 'emails', 'photos']
+
 		},
 		function (accessToken, refreshToken, profile, done) {
 			console.log(profile);
@@ -116,12 +120,13 @@ module.exports = function (passport) {
 	passport.use(new LinkedInStrategy({
 			consumerKey: configAuth.linkedinAuth.clientID,
 			consumerSecret: configAuth.linkedinAuth.clientSecret,
-			callbackURL: configAuth.linkedinAuth.callbackURL
+			callbackURL: configAuth.linkedinAuth.callbackURL,
+			profileFields: ['id', 'first-name', 'last-name', 'email-address', 'headline']
 		},
 		function (token, tokenSecret, profile, done) {
 			process.nextTick(function () {
 				User.findOne({
-					'linkedinAuth.id': profile.id
+					'linkedin.id': profile.id
 				}, function (err, user) {
 					if (err)
 						return done(err);
@@ -129,25 +134,21 @@ module.exports = function (passport) {
 						return done(null, user);
 					else {
 						var newUser = new User();
-						newUser.linkedinAuth.id = profile.id;
-						newUser.linkedinAuth.token = token;
-						newUser.linkedinAuth.name = profile.name.givenName + ' ' + profile.name.familyName;
-						newUser.linkedinAuth.email = profile.emails[0].value;
+						newUser.linkedin.id = profile.id;
+						newUser.linkedin.token = token;
+						newUser.linkedin.name = profile.name.givenName + ' ' + profile.name.familyName;
+						newUser.linkedin.email = profile.emails[0].value;
 
 						newUser.save(function (err) {
 							if (err)
 								throw err;
 							return done(null, newUser);
 						})
-						console.log(profile);
+
 					}
 				});
 			});
-			
-				console.log(token);
-				console.log(profile);
-				done();
-			
+
 		}
 
 	));
@@ -155,6 +156,7 @@ module.exports = function (passport) {
 	passport.use(new TwitterStrategy({
 			consumerKey: configAuth.twitterAuth.clientID,
 			consumerSecret: configAuth.twitterAuth.clientSecret,
+			userProfileURL: 'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true',
 			callbackURL: configAuth.twitterAuth.callbackURL
 		},
 		function (token, tokenSecret, profile, done) {
@@ -168,38 +170,116 @@ module.exports = function (passport) {
 						return done(null, user);
 					else {
 						var newUser = new User();
-						newUser.twitterAuth.id = profile.id;
-						newUser.twitterAuth.token = token;
-						newUser.twitterAuth.name = profile.name.givenName + ' ' + profile.name.familyName;
-						newUser.twitterAuth.email = profile.emails[0].value;
+						newUser.twitter.id = profile.id;
+						newUser.twitter.token = token;
+						newUser.twitter.name = profile._json.name;
+						newUser.twitter.email = profile.emails[0].value;
 
 						newUser.save(function (err) {
 							if (err)
 								throw err;
 							return done(null, newUser);
 						})
-						console.log(profile);
+
 					}
 				});
 			});
-			console.log(token);
-			console.log(profile);
-			done();
+
 		}
 
 	));
 
 	passport.use(new StockTwitsStrategy({
-        clientID: configAuth.stocktwits.clientID,
-        clientSecret: configAuth.stocktwits.clientSecret,
-        callbackURL: configAuth.stocktwits.callbackURL,
-        passReqToCallback: true
-    }, function (req, token, secret, profile, done) {
-        console.log(token);
-        console.log(profile);
-        done();
-    }
-));
+		clientID: configAuth.stocktwitsAuth.clientID,
+		clientSecret: configAuth.stocktwitsAuth.clientSecret,
+		callbackURL: configAuth.stocktwitsAuth.callbackURL,
+		passReqToCallback: true
+	}, function (req, token, secret, profile, done) {
+		process.nextTick(function () {
+			User.findOne({
+				'stocktwits.id': profile.id
+			}, function (err, user) {
+				if (err)
+					return done(err);
+				if (user)
+					return done(null, user);
+				else {
+					var newUser = new User();
+					newUser.stocktwits.id = profile.id;
+					newUser.stocktwits.token = token;
+					newUser.stocktwits.name = profile.name;
+					newUser.stocktwits.email = profile.email;
 
+					newUser.save(function (err) {
+						if (err)
+							throw err;
+						return done(null, newUser);
+					})
+
+				}
+			});
+		});
+	}));
+
+
+	passport.use(new GoogleStrategy({
+			clientID: configAuth.googleAuth.clientID,
+			clientSecret: configAuth.googleAuth.clientSecret,
+			callbackURL: configAuth.googleAuth.callbackURL,
+			scope: ['email', 'profile', 'https://www.googleapis.com/auth/userinfo.profile',
+				'https://www.googleapis.com/auth/userinfo.email',
+				'https://www.googleapis.com/auth/plus.login',
+				'https://www.google.com/m8/feeds/contacts/default/full'
+			],
+			passReqToCallback: true
+		},
+		async function (request, accessToken, refreshToken, profile, done) {
+
+
+			var url = 'https://www.google.com/m8/feeds/contacts/default/full?max-results=999999&alt=json&oauth_token=' + accessToken;
+			let res = await doRequest(url);
+			console.log(res);
+			User.findOne({
+				'google.id': profile.id
+			}, function (err, user) {
+				if (err)
+					return done(err);
+				if (user)
+					return done(null, user);
+				else {
+					var newUser = new User();
+					newUser.google.id = profile.id;
+					newUser.google.token = accessToken;
+					newUser.google.name = profile.name.givenName + ' ' + profile.name.familyName;
+					newUser.google.contacts = res;
+
+					newUser.save(function (err) {
+						if (err)
+							throw err;
+						return done(null, newUser);
+					})
+				}
+			});
+
+		}
+	));
 
 };
+
+function doRequest(url) {
+	return new Promise(function (resolve, reject) {
+		request1(url, function (error, res, body) {
+			if (!error && res.statusCode == 200) {
+				var contacts = JSON.parse(body);
+				for (let i = 0; i < 10; i++) {
+					if (contacts.feed.entry[i].hasOwnProperty("gd$email")) {
+						contactlist.push(contacts.feed.entry[i].gd$email[0].address)
+					}
+				}
+				resolve(contactlist);
+			} else {
+				reject(error);
+			}
+		});
+	});
+}

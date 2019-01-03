@@ -10,19 +10,21 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "*",
-    "body-parser": "latest",
+    "body-parser": "^1.18.3",
     "connect-flash": "~0.1.1",
     "cookie-parser": "^1.4.3",
     "ejs": "latest",
     "express": "^4.16.4",
     "express-session": "latest",
-    "mongoose": "latest",
+    "mongoose": "^5.4.1",
     "morgan": "^1.9.1",
     "passport": "~0.2.1",
     "passport-facebook": "~2.0.0",
+    "passport-google-oauth2": "^0.1.6",
     "passport-linkedin": "^1.0.0",
     "passport-local": "~1.0.0",
     "passport-stocktwits": "0.0.2",
-    "passport-twitter": "^1.0.4"
+    "passport-twitter": "^1.0.4",
+    "request": "^2.88.0"
   }
 }
