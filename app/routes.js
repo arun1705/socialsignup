@@ -45,9 +45,7 @@ module.exports = function (app, passport) {
 		}));
 
 	app.get('/auth/linkedin',
-		passport.authenticate('linkedin', {
-			scope: ['r_basicprofile', 'r_emailaddress']
-		}));
+		passport.authenticate('linkedin'));
 
 	app.get('/auth/linkedin/callback',
 		passport.authenticate('linkedin', {
@@ -63,21 +61,13 @@ module.exports = function (app, passport) {
 			successRedirect: '/profile',
 			failureRedirect: '/'
 		}));
-	app.get('/connect/stocktwits', passport.authorize('stocktwits', {
-		scope: ['read', 'watch_lists', 'publish_messages', 'publish_watch_lists',
-			'follow_users', 'follow_stocks'
-		],
+	app.get('/auth/stocktwits', passport.authorize('stocktwits'));
+
+	app.get('/auth/stocktwits/callback', passport.authorize('stocktwits', {
 		failureRedirect: '/',
 		successRedirect: '/profile'
 	}));
 
-	app.get('/connect/stocktwits/callback', passport.authorize('stocktwits', {
-		scope: ['read', 'watch_lists', 'publish_messages', 'publish_watch_lists',
-			'follow_users', 'follow_stocks'
-		],
-		failureRedirect: '/',
-		successRedirect: '/profile'
-	}));
 
 	app.get('/auth/google',
 		passport.authenticate('google'));
@@ -87,6 +77,26 @@ module.exports = function (app, passport) {
 			successRedirect: '/profile',
 			failureRedirect: '/'
 		}));
+
+	app.get('/auth/outlook',
+		passport.authenticate('windowslive', {
+			scope: [
+				'openid',
+				'profile',
+				'offline_access',
+				'https://outlook.office.com/Mail.Read'
+			]
+		})
+	);
+
+	app.get('/auth/outlook/callback',
+		passport.authenticate('windowslive', {
+			failureRedirect: '/login'
+		}),
+		function (req, res) {
+			// Successful authentication, redirect home.
+			res.redirect('/');
+		});
 
 	app.get('/logout', function (req, res) {
 		req.logout();

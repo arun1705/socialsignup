@@ -4,6 +4,7 @@ var LinkedInStrategy = require('passport-linkedin').Strategy;
 var TwitterStrategy = require('passport-twitter').Strategy;
 var StockTwitsStrategy = require('passport-stocktwits').Strategy;
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
+var OutlookStrategy = require('passport-outlook').Strategy;
 var request1 = require("request");
 var User = require('../app/models/user');
 var configAuth = require('./auth');
@@ -193,8 +194,12 @@ module.exports = function (passport) {
 		clientID: configAuth.stocktwitsAuth.clientID,
 		clientSecret: configAuth.stocktwitsAuth.clientSecret,
 		callbackURL: configAuth.stocktwitsAuth.callbackURL,
+		scope: ['read', 'watch_lists', 'publish_messages', 'publish_watch_lists',
+			'follow_users', 'follow_stocks'
+		],
 		passReqToCallback: true
 	}, function (req, token, secret, profile, done) {
+	
 		process.nextTick(function () {
 			User.findOne({
 				'stocktwits.id': profile.id
@@ -263,6 +268,31 @@ module.exports = function (passport) {
 
 		}
 	));
+
+
+	// passport.use(new OutlookStrategy({
+	// 	clientID: OUTLOOK_CLIENT_ID,
+	// 	clientSecret: OUTLOOK_CLIENT_SECRET,
+	// 	callbackURL: 'http://www.example.com/auth/outlook/callback'
+	//   },
+	//   function(accessToken, refreshToken, profile, done) {
+	// 	var user = {
+	// 	  outlookId: profile.id,
+	// 	  name: profile.DisplayName,
+	// 	  email: profile.EmailAddress,
+	// 	  accessToken:  accessToken
+	// 	};
+	// 	if (refreshToken)
+	// 	  user.refreshToken = refreshToken;
+	// 	if (profile.MailboxGuid)
+	// 	  user.mailboxGuid = profile.MailboxGuid;
+	// 	if (profile.Alias)
+	// 	  user.alias = profile.Alias;
+	// 	User.findOrCreate(user, function (err, user) {
+	// 	  return done(err, user);
+	// 	});
+	//   }
+	// ));
 
 };
 

@@ -17,7 +17,7 @@ module.exports = {
 	'stocktwitsAuth' : {
 		'clientID': '099553b84befb363',
 		'clientSecret': '35a9b072e43b93bf1858ff65dd0dbbe9546043d8',
-		'callbackURL': 'http://localhost:8080/connect/stocktwits/callback'
+		'callbackURL': 'http://localhost:8080/auth/stocktwits/callback'
 	},
 	'googleAuth' :{
 		'clientID':'935176398025-bo04bfk1guili1v3pf5qikddcptv9hd3.apps.googleusercontent.com',
