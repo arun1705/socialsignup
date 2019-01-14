@@ -5,22 +5,65 @@
 	<title>Node Authentication</title>
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
 	<style>
 		body 		{ padding-top:80px; }
+		.fa-twitter {
+  background: #55ACEE;
+  color: white;
+}
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+
+.fa-linkedin {
+  background: #007bb5;
+  color: white;
+}
+
+
+.fa-google {
+  background: #dd4b39;
+  color: white;
+}
+
+.fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 50px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 2px;
+}
+
 	</style>
 </head>
 <body>
+	
 <div class="container">
 
 	<div class="jumbotron text-center">
 		<h1><span class="fa fa-lock"></span> Node Authentication</h1>
+<p> <img src="/home/piyusha/Documents/socialsignup/views/index.png" style="width: 220px; height: 10px;" alt="I'm on StockTwits"></p>
 
 		<p>Login or Register with:</p>
-		<a href="/auth/linkedin" class="btn btn-default"><span class="fa fa-linkedin"></span>LinkedIn</a>
-		<a href="/auth/twitter" class="btn btn-default"><span class="fa fa-twitter"></span>Twitter</a>
-		<a href="/auth/facebook" class="btn btn-default"><span class="fa fa-facebook"></span>Facebook</a>
-		<a href="/auth/stocktwits" class="btn btn-default"><span class="fa fa-stocktwits"></span>Stocktwits</a>
-		<a href="/auth/google" class="btn btn-default"><span class="fa fa-google"></span>Google</a>
+		<a href="/auth/linkedin"><span class="fa fa-linkedin"></span></a>
+		<a href="/auth/twitter"><span class="fa fa-twitter"></span></a>
+		<a href="/auth/facebook"><span class="fa fa-facebook"></span></a>
+		<a href="/auth/stocktwits"><span class="fa fa-stocktwits"></span>Stocktwits</a>
+		<a href="http://stocktwits.com"><br /><img src="http://localhost:8080/home/piyusha/Documents/socialsignup/views/img/sttwits.jpeg" style="width: 20px; height: 10px;" alt="I'm on StockTwits"><br /></a>
+		<!-- <a href="/auth/google" ><span class="fa fa-google"></span></a> -->
+		<div class="btn white darken-4 col s10 m4">
+			<a href="/auth/google" style="text-transform:none">
+				
+				<div class="left">
+					<img width="20px" alt="Google &quot;G&quot; Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"/>
+				</div>
+				
+			</a>
+	   </div>
 	</div>
 
 </div>
